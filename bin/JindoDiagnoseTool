@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+bin=`which $0`
+bin=`dirname ${bin}`
+bin=`cd "$bin"; pwd`
+
+function print_usage(){
+  echo "Usage: JindoDiagnoseTool <bucket/bucket_dir>"
+}
+
+if [ $# = 0 ]; then
+  print_usage
+  exit
+fi
+
+COMMAND=$1
+case $COMMAND in
+  # usage flags
+  --help|-help|-h)
+    print_usage
+    exit
+    ;;
+  #core commands
+  *)
+  # the core commands
+
+  echo "====================== Step 1: check bucket connectivity ======================"
+  jindo-util fs -diagnose -connect "$@"
+  echo "====================== Step 2: check bucket info ======================"
+  jindo-util fs -diagnose -bucketInfo "$@"
+  echo "====================== Step 3: check system info ======================"
+  jindo-util fs -diagnose -sysInfo
+  echo "====================== Step 4: show log path ======================"
+  jindo-util fs -diagnose -log -showPath
+  echo "====================== Step 5: show latest log content ======================"
+  jindo-util fs -diagnose -log -showContent
+esac
